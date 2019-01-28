@@ -44,5 +44,8 @@ fslmaths sphere12mm -mul $FSLDIR/data/standard/MNI152_T1_2mm_brain_mask.nii.gz s
 # Combine masks.
 fslmaths sphere2mm -add sphere4mm -add sphere7mm -add sphere9mm -add sphere12mm cone_roi_${name} -odt float;
 
+# Normalize intensity to 1
+fslmaths cone_roi_${name} -inm 1 cone_roi_${name}_norm -odt float
+
 echo "cone_roi_${name} is finished"
 
