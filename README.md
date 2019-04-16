@@ -27,6 +27,15 @@ Then to export it:
 
 `write.csv(mytable, file = "mytable.csv")`
 
+## Bids Scripts
+
+Scripts and code helpful for BIDS framework.
+
+## Cone TMS ROI
+
+Script to create cones based on Michael Fox's connectivity analysis.
+
+
 
 
 
