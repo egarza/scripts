@@ -1,2 +1,54 @@
 ## Several scripts for the BIDS framework
 
+Besides the scripts, here is some useful code:
+
+
+#### MRIQC
+
+`sudo docker run -i --rm -v /media/egarza/INP_MRI_Backup/projects/INP/addimex_tms/data/mri/bids:/bids_dataset:ro -v /media/egarza/INP_MRI_Backup/projects/INP/addimex_tms/data/mri/outputs_mriqc:/outputs bids/mriqc /bids_dataset /outputs participant --participant_label 010 011 012 013 014`
+
+`sudo docker run -i --rm -v /media/egarza/INP_MRI_Backup/projects/INP/addimex_tms/data/mri/bids:/bids_dataset:ro -v /media/egarza/INP_MRI_Backup/projects/INP/addimex_tms/data/mri/outputs_mriqc:/outputs bids/mriqc /bids_dataset /outputs group`
+
+
+
+#### Add Slice timing
+
+`to3d -prefix 001_t1.nii.gz -time:zt 37 300 2000 alt+z raw_dicom/001/t1/epi/*.dcm`
+
+`3dinfo -slice_timing 001_t1.nii.gz`
+
+`sed -i '28i\,"SliceTiming": [0.000000,1.027027,0.054054,1.081081,0.108108,1.135135,0.162162,1.189189,0.216216,1.243244,0.270270,1.297298,0.324324,1.351352,0.378378,1.405406,0.432432,1.459460,0.486486,1.513514,0.540541,1.567568,0.594595,1.621622,0.648649,1.675676,0.702703,1.729730,0.756757,1.783784,0.810811,1.837838,0.864865,1.891892,0.918919,1.945947,0.972973]' sub-001_ses-t0_task-rest_bold.json`
+
+`39 slices = [0.000000,1.025641,0.051282,1.076923,0.102564,1.128205,0.153846,1.179487,0.205128,1.230769,0.256410,1.282052,0.307692,1.333334,0.358974,1.384616,0.410256,1.435898,0.461538,1.487180,0.512820,1.538462,0.564102,1.589744,0.615385,1.641026,0.666667,1.692308,0.717949,1.743590,0.769231,1.794873,0.820513,1.846155,0.871795,1.897437,0.923077,1.948719,0.974359]`
+
+
+
+#### Add TaskName to json by hand.
+`sed -i '27i\,"TaskName": "rest"' sub-001_ses-t0_task-rest_bold.json`
+
+
+### CPAC
+
+#### runs standard pipeline with and without bandpass filter.
+`sudo docker run -i --rm -v /tmp:/scratch -v /media/egarza/INP_MRI_Backup/projects/INP/addimex_tms/data/mri/bids:/bids_dataset -v /media/egarza/INP_MRI_Backup/projects/INP/addimex_tms/data/mri/outputs_cpac:/outputs bids/cpac /bids_dataset /outputs participant --participant_label 001`
+
+#### Final files for regular analysis
+
+#### Final in MNI with bandpass
+`/media/egarza/INP_MRI_Backup/projects/INP/addimex_tms/data/mri/outputs_cpac/output/pipeline_analysis__freq-filter/sub-001_ses-t0/functional_to_standard/_scan_task-rest/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/_bandpass_freqs_0.01.0.1/bandpassed_demeaned_filtered_antswarp.nii.gz`
+
+#### Final in MNI without bandpass
+`/media/egarza/INP_MRI_Backup/projects/INP/addimex_tms/data/mri/outputs_cpac/output/pipeline_analysis/sub-001_ses-t0/functional_to_standard/_scan_task-rest/_compcor_ncomponents_5_selector_pc10.linear1.wm0.global0.motion1.quadratic1.gm0.compcor1.csf1/residual_antswarp.nii.gz`
+
+
+### Run in Lavis
+
+Create the pipeline and datafiles by running it once quickly for all participants. Then modify the pipeline file.
+
+### Send to Lavis
+`rsync -avzhe ssh --progress --ignore-existing bids egarza@192.168.100.24://mnt/MD1200A/fbarrios/egarza/addimex_tms/`
+
+Modify the SGE file. qsub sge file
+
+
+
